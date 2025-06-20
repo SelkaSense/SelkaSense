@@ -1,150 +1,174 @@
-# 🌌 AuroraTrace: Illuminate Blockchain Risks with AI
+# 🔮 SelkaSense: Predictive Token Risk Detection
 
-## 🔍 Introduction
+## 🌐 Overview
 
-**AuroraTrace** is an AI-powered blockchain analyzer designed to detect scams, contract vulnerabilities, and market risks in real time.  
-Built for traders, analysts, and security explorers — it brings precision scanning, intelligent alerts, and data-driven protection to your crypto journey.
+SelkaSense is an AI-powered tool for predicting token risks and market instability in real time. It helps users stay ahead of volatility by delivering precise and timely signals.
 
-Navigate safely. Illuminate the unknown.
+## 🔑 Key Features
 
-## 🌠 Key Features
+### 🔎 RiskRadar  
+Detects unstable tokens by tracking sharp price deviations.
 
-🕳️ **DarkTrack**  
-Scans for fragmented or obfuscated transactions that may signal laundering, proxy routing, or hidden flows across wallets.
+### 🌐 PulseTrack  
+Flags unusual market shifts based on volume and price behavior.
 
-📡 **SignalLight**  
-Monitors token activity to detect:
-- Sudden volume bursts  
-- Liquidity reallocation  
-- Coordinated manipulation patterns
+### ⚠️ VolatilityPredict  
+Forecasts high-risk volatility using liquidity and price movement data.
 
-⚠️ **RiskAlert**  
-Delivers real-time warnings when smart contracts exhibit suspicious behaviors — from stealth mints to LP unlocks and dev withdrawals.
+### 🧭 TrendShift  
+Identifies early trend reversals before they become obvious.
 
-📊 **DataPulse**  
-Analyzes live market flow and sentiment overlays to highlight:
-- Trend spikes  
-- Coordinated sell-offs  
-- High-risk formation zones
+### 💧 LiquidityFlow  
+Monitors low liquidity conditions that may block exits or indicate potential traps.
 
 ---
-## 🗺️ AuroraTrace — Signal Roadmap
 
-AuroraTrace evolves across phases — from detection to foresight.  
-Each stage expands the system’s reach, clarity, and intelligence.
+## 🚀 Roadmap
 
-### ✅ Phase 1: MVP (Live)
+### ✅ Phase 1 — MVP (Launched)
 
-The core tracing engine has been activated — **Aurora’s light pierces the veil**.
+Our core detection engine is live and pulsing with real-time data:
 
-- 🌌 **DarkTrack** — Covert transaction surveillance
-- 📡 **SignalLight** — Real-time anomaly detection
-- 🛡 **RiskAlert** — Instant flags for suspicious behavior
-- 🔦 **DataPulse** — Continuous monitoring of market flow
-- 🔗 **Discord-Synced Access Key** — Role-based feature unlocks via $AURA holdings
-- 💠 **$AURA Token Integration** — Powering layered access and advanced tools  
-📅 *Deployed: Q3 2025*
+- 🔎 **RiskRadar** — Predict token instability through behavioral pattern scans
+- 🌐 **PulseTrack** — Analyze seismic shifts in market structure and liquidity
+- ⚠️ **VolatilityPredict** — Forecast high-risk events with advanced AI modeling
+- 🧭 **TrendShift** — Detect early directional changes before the market reacts
 
-### 🟣 Phase 2: Pulse Expansion (Active)
+📅 **Released:** Q3 2025
 
-The system evolves — deeper insights, broader tracking, and more intuitive signals.
+### 🌀 Phase 2 — Current Cycle (Q3–Q4 2025)
 
-- 🌐 **GuardLayer** — Multi-chain expansion across Solana, Base, Arbitrum
-- 🔍 **PatternTrace** — Advanced detection of recurring anomaly patterns
-- 🧭 **AlertFlow** — Cross-token syncing for smarter alert correlation
-- 🧬 **Behavior Matrix** — Identification of subtle transaction intent signals
-- 📊 **Role-Synced Dashboards** — UI elements adapt based on your access level  
-📅 *In Progress: Q4 2025*
+We’re expanding Selka’s sensitivity to subtle liquidity movements and signal patterns:
 
-### 🔴 Phase 3: Cognitive Forecasting (Planned)
+- 💧 **LiquidityFlow** — Monitor deep liquidity dynamics across tokens in real time
+- 🚀 **SignalBoost** — Amplify alert precision with enhanced anomaly scoring
+- 🛡 **FlowGuard** — AI-powered detection for unstable or manipulated liquidity pools
+- 🧱 **StabilityGuard** — Long-range analysis of token health and market sustainability
 
-Aurora becomes predictive — no longer just detecting, but *foretelling*.
+📅 **In Progress:** June–August 2025
 
-- 🛰️ **EchoMap** — Visual mapping of wallet migrations and shadow flows
-- ⚠️ **Disruption Predictor** — Predictive risk scoring before anomalies emerge
-- 🧠 **Neural Trace Engine** — Foresight powered by deep learning and memory layers
-- 💬 **Signal Sentiment Feed** — Fusion of on-chain behavior and social sentiment
-- 🌉 **ChainBridge Scanner** — Cross-chain syncing of risk patterns  
-📅 *Scheduled: Q1 2026*
+### 🔮 Phase 3 — Upcoming (Q1 2026 and beyond)
 
-**AuroraTrace** is not static — it's a growing, learning sentinel.  
-As threats evolve, so does the signal.
+Future upgrades will include:
+
+- Advanced AI overlays  
+- Predictive simulation engines  
+- Full cross-chain adaptation and risk synchronization  
+
+Selka evolves as the chain does — stay tuned.
 
 ---
-## 📂GitHub Access
+## 🧠 AI Functionality
 
-Each AuroraTrace module is engineered to scan blockchain behavior in real time — identifying risks, tracing hidden flows, and decoding market patterns before they become threats.
+SelkaSense includes five core AI modules designed to detect market instability and token-specific risk in real time.
 
-### 🕳️ DarkTrack — Hidden Transaction Tracer
-
-**Goal:**  
-Identify transaction paths that are fragmented, obfuscated, or routed through proxy wallets to mask intent.
-
-```python
-def dark_track(tx_path):
-    if len(tx_path) > 5 and tx_path.count('unknown_wallet') >= 2:
-        return "Suspicious Movement Detected"
-    elif len(tx_path) > 3:
-        return "Obscured Transaction Trail"
-    else:
-        return "Normal Flow"
-```
-#### Interpretation:
-Long and complex chains with unknown wallets may indicate laundering, relays, or stealth routing attempts.
-
-### 📡 SignalLight — Anomaly Signal Detector
-#### Goal: Detect short-term anomalies such as micro pumps, liquidity distortions, and artificial transaction surges.
+### 🔎 1. RiskRadar — Token Instability Prediction
 
 ```javascript
-function signalLight(volumeChange, liquidityShift, txSpike) {
-  if (volumeChange > 150 && liquidityShift < 10 && txSpike > 60) {
-    return "High Anomaly Risk";
-  } else if (volumeChange > 80) {
-    return "Moderate Signal Detected";
+function riskRadar(tokenData) {
+  const priceVolatility = tokenData.currentPrice - tokenData.previousPrice;
+  const priceHistoryScore = Math.abs(priceVolatility / tokenData.previousPrice);
+
+  if (priceHistoryScore > 0.1) {
+    return 'Alert: Token Instability Detected';
   } else {
-    return "Normal Activity";
+    return 'Token Stable';
   }
 }
 ```
-####  Interpretation: Sharp volume spikes with low liquidity and high transaction count often suggest botnet activity or pump attempts.
 
-### ⚠️ RiskAlert — Irregularity Notifier
-#### Goal: Trigger real-time alerts when a token exhibits behavior consistent with high-risk patterns.
+**What it does:**  
+Analyzes price volatility by comparing current and previous token prices.  
+**Why it matters:**  
+Flags abnormal price movements exceeding 10% — often a signal of manipulation or instability.
 
-```python
-def risk_alert(tx_density, token_age_days, recent_alerts):
-    if tx_density > 300 and token_age_days < 5 and recent_alerts >= 2:
-        return "Immediate Risk Alert"
-    elif tx_density > 150:
-        return "Watchlist"
-    else:
-        return "Stable"
-```
-#### Interpretation: Young tokens with intense transaction volume and previous alert history are strong scam/rugpull candidates.
-
-### 📊 DataPulse — Market Flow Tracker
-#### Goal: Analyze evolving price and wallet inflow data to highlight sudden shifts in market behavior.
+### 🌐 2. PulseTrack — Market Seismic Analysis
 
 ```javascript
-function dataPulse(priceDelta, walletInflow, timeframeMinutes) {
-  const speed = walletInflow / timeframeMinutes;
-  if (priceDelta > 20 && speed > 5) {
-    return "Trend Spike Detected";
-  } else if (priceDelta < -15) {
-    return "Negative Trend Shift";
+function pulseTrack(marketData) {
+  const volatilityIndex = marketData.totalVolume / marketData.transactionFrequency;
+  const marketShiftFactor = marketData.priceChange / volatilityIndex;
+
+  if (Math.abs(marketShiftFactor) > 0.3) {
+    return 'Alert: Major Market Shift Detected';
   } else {
-    return "Steady Market Pulse";
+    return 'Market Stable';
   }
 }
 ```
-#### Interpretation: Price increases with rapid inflows can mark bullish spikes, while sharp drops despite inflows may signal coordinated exits or traps.
+
+**What it does:**  
+Calculates a volatility index from volume and frequency, then compares it to price changes.  
+**Why it matters:**  
+Detects price swings unsupported by volume — a potential red flag for artificial movement.
+
+### ⚠️ 3. VolatilityPredict — Advanced Risk Forecasting
+
+```javascript
+function volatilityPredict(tokenData) {
+  const priceChange = Math.abs(tokenData.currentPrice - tokenData.previousPrice);
+  const liquidityImpact = tokenData.liquidityFactor / tokenData.marketDepth;
+
+  const volatilityRisk = priceChange * liquidityImpact;
+
+  if (volatilityRisk > 0.5) {
+    return 'Alert: High Risk of Volatility';
+  } else {
+    return 'Risk Level Low';
+  }
+}
+```
+
+**What it does:**  
+Forecasts turbulence by factoring in price movement and liquidity conditions.  
+**Why it matters:**  
+Useful for identifying tokens where even small moves may trigger large reactions in illiquid environments.
+
+### 🧭 4. TrendShift — Early Market Shift Identification
+
+```javascript
+function trendShift(marketData) {
+  const historicalTrend = (marketData.previousPrice * marketData.previousVolume) / 1000;
+  const trendDeviation = (marketData.currentPrice - historicalTrend) / historicalTrend;
+
+  if (Math.abs(trendDeviation) > 0.05) {
+    return 'Alert: Early Trend Shift Identified';
+  } else {
+    return 'Trend Stable';
+  }
+}
+```
+
+**What it does:**  
+Compares current price/volume data to historical baselines.  
+**Why it matters:**  
+Spots subtle deviations that may signal trend reversals before they become visible to the broader market.
+
+### 💧 5. LiquidityFlow — Real-Time Liquidity Monitoring
+
+```javascript
+function liquidityFlow(marketData) {
+  const liquidityRatio = marketData.tokenVolume / marketData.marketLiquidity;
+
+  if (liquidityRatio < 0.05) {
+    return 'Alert: Low Liquidity Detected';
+  } else {
+    return 'Liquidity Flow Normal';
+  }
+}
+```
+
+**What it does:**  
+Tracks how much actual token volume backs the available liquidity.  
+**Why it matters:**  
+Detects thin markets where exit liquidity is low — crucial for avoiding traps and slippage.
+
 ---
 
-## 🌠 Final Signal
+## 🧾 Conclusion
 
-AuroraTrace isn’t just a scanner — it’s a lens into the unseen.  
-In the noise of Web3, it listens. In the dark, it draws constellations of insight.
+SelkaSense is built for those who move fast and think ahead.  
+With AI-powered detection, predictive analytics, and real-time insights, it’s your edge against volatility and on-chain traps.  
+Stay safe, stay early — Selka sees what others miss.
 
-Stay sharp. Stay ahead.  
-Let the signal guide you.
 ---
