@@ -1,5 +1,3 @@
-// selkasenseSignals.ts
-
 /**
  * Traffic-light–style risk signal based on volume, liquidity, and transaction bursts.
  *
