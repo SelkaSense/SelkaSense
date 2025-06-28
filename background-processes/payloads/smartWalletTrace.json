@@ -1,0 +1,42 @@
+{
+  "scanReportId": "selka_diagnostic_20250628_001",
+  "timestamp": "2025-06-28T09:44:13Z",
+  "engine": "SelkaSense::SolanaTraceModule",
+  "tokenProfile": {
+    "symbol": "XYZ",
+    "mintAddress": "7hsd83Ksnq3fa45sgYsA8TUGsRnb9uZ9qebFwXvJtvqX",
+    "projectLabel": "Unknown"
+  },
+  "riskFlags": {
+    "liquidityAnomaly": true,
+    "recentMintDetected": true,
+    "whaleBehaviorAbsent": true,
+    "sybilScore": 72
+  },
+  "insights": {
+    "liquidityDelta24h": -46.3,
+    "buyersUnique": 12,
+    "verifiedSmartWallets": 0,
+    "volatilityIndex": 88,
+    "totalTxsObserved": 97
+  },
+  "tags": [
+    {
+      "label": "⚠️ Liquidity Drain",
+      "note": "Over 40% liquidity loss detected — likely exit or pullback behavior"
+    },
+    {
+      "label": "📵 No Smart Wallets",
+      "note": "Zero engagement from known smart trading entities"
+    },
+    {
+      "label": "🧪 Sybil Alert",
+      "note": "Score of 72 indicates potential coordinated wallet pattern"
+    }
+  ],
+  "verdict": {
+    "threatRating": "High",
+    "action": "Deprioritize or blacklist until positive indicators emerge",
+    "modelConfidence": 0.92
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "auditReportId": "selka_audit_20250628_042",
+  "scannedAt": "2025-06-28T12:25:00Z",
+  "subjectWallet": {
+    "address": "FJt8xk3qAsy3BGNq9YqTrRZ12eXbwV5rWh2hkShx9N3v",
+    "labels": ["⚠️ suspect", "⚡️high_activity"],
+    "firstActivity": "2025-06-19T07:12:00Z"
+  },
+  "snapshot": {
+    "txCount_24h": 312,
+    "tokensTouched": 18,
+    "tokensSpawned": 3,
+    "bridgeUsage": [],
+    "volumeMoved_SOL": 1987.43
+  },
+  "behaviors": [
+    {
+      "label": "Token Seeder",
+      "detail": "Created 3 new tokens within the last 24h"
+    },
+    {
+      "label": "Bridge Looper",
+      "detail": "Multiple inbound/outbound bridge flows detected in tight intervals"
+    },
+    {
+      "label": "Burst Transfers",
+      "detail": "Over 300 txs in 24h — automated or scripted behavior likely"
+    }
+  ],
+  "flags": {
+    "tokenCreationSpike": true,
+    "bridgeCycling": true,
+    "spamRiskDetected": true
+  },
+  "selkaScore": {
+    "threatLevel": "Elevated",
+    "numericScore": 87,
+    "advisory": "Flag for active watch. Throttle transfers if supported"
+  }
+}
