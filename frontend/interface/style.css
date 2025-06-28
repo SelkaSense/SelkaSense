@@ -1,18 +1,87 @@
+/* Base palette */
+:root {
+  --bg-main: #0e0e1f;
+  --text-main: #e0e0e0;
+  --border-base: #3b3b50;
+  --card-bg: rgba(255, 255, 255, 0.04);
+
+  /* Risk colors */
+  --risk-low: #38c172;
+  --risk-medium: #f59e0b;
+  --risk-high: #ef4444;
+}
+
+html,
 body {
-  background-color: #0e0e1f;
-  color: #e0e0e0;
-  font-family: 'Segoe UI', sans-serif;
-  padding: 20px;
+  margin: 0;
+  padding: 0;
+  background: var(--bg-main);
+  color: var(--text-main);
+  font-family: "Segoe UI", system-ui, sans-serif;
 }
+
+/* Layout utility */
+.container {
+  padding: 2rem clamp(1rem, 4vw, 3rem);
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+/* Token card component */
 .token-card {
-  border: 1px solid #444;
-  padding: 15px;
-  background: rgba(255,255,255,0.02);
-  border-radius: 8px;
-  max-width: 400px;
-  margin: 20px 0;
+  background: var(--card-bg);
+  border: 1px solid var(--border-base);
+  border-radius: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  margin-block: 1.25rem;
+  backdrop-filter: blur(6px);
+  transition: transform 0.2s ease, border-color 0.2s ease;
 }
-.token-name, .token-risk {
-  font-size: 18px;
-  margin: 8px 0;
+
+.token-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--risk-medium);
+}
+
+.token-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0 0 0.35rem;
+  letter-spacing: 0.3px;
+}
+
+.token-risk {
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Color-coding risk levels */
+.token-risk.low {
+  color: var(--risk-low);
+}
+
+.token-risk.medium {
+  color: var(--risk-medium);
+}
+
+.token-risk.high {
+  color: var(--risk-high);
+}
+
+/* Responsive grid demo */
+.token-grid {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+/* Small screen tweaks */
+@media (max-width: 480px) {
+  .token-card {
+    padding: 1rem 1.25rem;
+  }
+  .token-name {
+    font-size: 1rem;
+  }
 }
