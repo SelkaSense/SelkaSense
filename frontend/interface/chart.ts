@@ -1,26 +1,50 @@
 /**
- * Render a simple text-based risk “heat map” from an array of scores.
+ * Render a configurable text-based risk “heat map” from an array of scores.
  *
  *  • 0.0–0.5   → 🟢  (low risk)
  *  • 0.5–0.8   → 🟠  (medium risk)
  *  • 0.8–1.0   → 🔴  (high risk)
  *
- * Optionally include row/column breaks for readability.
+ * @param scores   Array of numeric scores (0.0–1.0)
+ * @param options.cols        Number of columns per row (default: 16)
+ * @param options.delimiter   Separator between symbols (default: ' ')
+ * @param options.symbols     Custom symbols mapping for each risk tier
+ * @param options.showAxis    If true, prefixes each row with its row index
+ * @returns A multiline string representing the heat map
  */
 export function renderRiskChart(
   scores: number[],
-  cols = 16,                // wrap every N entries
+  options: {
+    cols?: number
+    delimiter?: string
+    symbols?: { low: string; medium: string; high: string }
+    showAxis?: boolean
+  } = {}
 ): string {
-  const symbols = scores.map((v) => {
-    if (v >= 0.8) return "🔴"
-    if (v >= 0.5) return "🟠"
-    return "🟢"
-  })
+  const {
+    cols = 16,
+    delimiter = " ",
+    symbols = { low: "🟢", medium: "🟠", high: "🔴" },
+    showAxis = false,
+  } = options
 
-  /* Add line breaks for grid layout */
+  // Helper to clamp and map a value to its symbol
+  const mapToSymbol = (v: number): string => {
+    if (!Number.isFinite(v) || v < 0) v = 0
+    if (v >= 0.8) return symbols.high
+    if (v >= 0.5) return symbols.medium
+    return symbols.low
+  }
+
   const lines: string[] = []
-  for (let i = 0; i < symbols.length; i += cols) {
-    lines.push(symbols.slice(i, i + cols).join(" "))
+  const totalRows = Math.ceil(scores.length / cols)
+
+  for (let row = 0; row < totalRows; row++) {
+    const start = row * cols
+    const chunk = scores.slice(start, start + cols)
+    const mapped = chunk.map(mapToSymbol).join(delimiter)
+    const prefix = showAxis ? `${row.toString().padStart(2, "0")}: ` : ""
+    lines.push(prefix + mapped)
   }
 
   return lines.join("\n")
@@ -29,5 +53,11 @@ export function renderRiskChart(
 /* Quick demo when run in Node */
 if (require.main === module) {
   const data = Array.from({ length: 48 }, () => Math.random())
-  console.log(renderRiskChart(data))
+  console.log(
+    renderRiskChart(data, {
+      cols: 12,
+      showAxis: true,
+      symbols: { low: "·", medium: "•", high: "●" }
+    })
+  )
 }
