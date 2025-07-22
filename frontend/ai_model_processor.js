@@ -1,98 +1,111 @@
-class AIModule {
-  constructor(id) {
-    this.id = id;
-    this.metrics = {};
-    this.history = [];
+// aiModule.ts
+
+export interface Metric {
+  accuracy: number       // [0…1]
+  latency: number        // in ms
+  consistency: number    // [0…1]
+  timestamp: number
+}
+
+export type Status = 'Optimal' | 'Stable' | 'Unstable'
+
+export class AIModule {
+  public readonly id: string
+  private history: Metric[] = []
+
+  // configurable weights
+  private readonly weights = {
+    accuracy: 0.5,
+    latency: 0.3,      // will be applied to inverted & normalized latency
+    consistency: 0.2
   }
-  updateMetrics(newData) {
-    Object.assign(this.metrics, newData);
-    this.history.push({...newData, timestamp: Date.now()});
+
+  constructor(id: string) {
+    this.id = id
   }
-  calculateTrustIndex() {
-    const { accuracy, latency, consistency } = this.metrics;
-    if (!accuracy || !latency || !consistency) return 0;
-    return ((accuracy * 0.5) + (1 / latency) * 0.3 + (consistency * 0.2)).toFixed(4);
+
+  /** add a new metric snapshot */
+  updateMetrics(data: Omit<Metric, 'timestamp'>): void {
+    this.history.push({ ...data, timestamp: Date.now() })
   }
-  predictStatus() {
-    const trust = this.calculateTrustIndex();
-    return trust > 0.9 ? 'Optimal' : trust > 0.7 ? 'Stable' : 'Unstable';
+
+  /** return the most recent raw metrics or null */
+  get currentMetrics(): Metric | null {
+    return this.history.length > 0 ? this.history[this.history.length - 1] : null
   }
-  resetMetrics() {
-    this.metrics = {};
+
+  /** compute trust index based on currentMetrics, normalized between 0 and 1 */
+  calculateTrustIndex(): number {
+    const m = this.currentMetrics
+    if (!m) return 0
+
+    // normalize latency: higher latency → lower score
+    const maxLatency = 250  // assumed cap
+    const invLatency = Math.max(0, (maxLatency - m.latency) / maxLatency)
+
+    const score =
+      m.accuracy * this.weights.accuracy +
+      invLatency * this.weights.latency +
+      m.consistency * this.weights.consistency
+
+    return parseFloat(score.toFixed(4))
   }
-  getHistoryLength() {
-    return this.history.length;
+
+  /** status based on thresholds */
+  predictStatus(): Status {
+    const trust = this.calculateTrustIndex()
+    if (trust >= 0.9) return 'Optimal'
+    if (trust >= 0.7) return 'Stable'
+    return 'Unstable'
   }
-  fetchSnapshot(n = 5) {
-    return this.history.slice(-n);
+
+  /** clear history */
+  resetMetrics(): void {
+    this.history = []
+  }
+
+  /** return how many snapshots recorded */
+  getHistoryLength(): number {
+    return this.history.length
+  }
+
+  /** fetch the last `n` snapshots, newest last */
+  fetchSnapshot(n: number = 5): Metric[] {
+    return this.history.slice(-n)
+  }
+
+  /** compute average of a history slice for a given key */
+  average<K extends keyof Metric>(key: K, slice: Metric[] = this.history): number {
+    if (slice.length === 0) return 0
+    const sum = slice.reduce((acc, m) => acc + (m[key] as number), 0)
+    return sum / slice.length
   }
 }
-function generateRandomMetric() {
+
+// utils.ts
+
+import { Metric } from './aiModule'
+
+/** generate a random metric */
+export function generateRandomMetric(): Omit<Metric, 'timestamp'> {
   return {
     accuracy: Math.random(),
     latency: Math.random() * 200 + 50,
     consistency: Math.random(),
-  };
-}
-function average(values) {
-  return values.reduce((a, b) => a + b, 0) / values.length;
-}
-function generateBatchModules(count) {
-  const modules = [];
-  for (let i = 0; i < count; i++) {
-    const module = new AIModule(`mod-${i}`);
-    for (let j = 0; j < 10; j++) {
-      module.updateMetrics(generateRandomMetric());
-    }
-    modules.push(module);
   }
-  return modules;
 }
-const modules = generateBatchModules(20);
-const summaries = modules.map(mod => ({
-  id: mod.id,
-  trust: mod.calculateTrustIndex(),
-  status: mod.predictStatus(),
-}));
-const unstable = summaries.filter(s => s.status === 'Unstable');
-const avgTrust = average(summaries.map(s => parseFloat(s.trust)));
-const topModule = summaries.reduce((best, curr) =>
-  parseFloat(curr.trust) > parseFloat(best.trust) ? curr : best
-);
-function transformForUI(summary) {
-  return { label: `${summary.id} (${summary.status})`, value: summary.trust };
+
+/** compute simple average of numbers */
+export function average(values: number[]): number {
+  if (values.length === 0) return 0
+  return values.reduce((a, b) => a + b, 0) / values.length
 }
-const uiData = summaries.map(transformForUI);
-const trustBuckets = summaries.reduce((acc, curr) => {
-  const bucket = curr.status;
-  acc[bucket] = acc[bucket] || [];
-  acc[bucket].push(curr.trust);
-  return acc;
-}, {});
-const uniqueIDs = new Set(modules.map(m => m.id));
-const trustValues = Object.values(trustBuckets).flat();
-const trustRange = {
-  min: Math.min(...trustValues.map(v => parseFloat(v))),
-  max: Math.max(...trustValues.map(v => parseFloat(v)))
-};
-function normalize(value, min, max) {
-  return (value - min) / (max - min);
+
+/** normalize an array of values to [0…1] */
+export function normalizeArray(values: number[]): number[] {
+  if (values.length === 0) return []
+  const min = Math.min(...values)
+  const max = Math.max(...values)
+  const range = max - min || 1
+  return values.map(v => (v - min) / range)
 }
-const normalizedTrust = trustValues.map(v => normalize(parseFloat(v), trustRange.min, trustRange.max));
-function labelStatus(trust) {
-  return trust > 0.85 ? 'Green' : trust > 0.6 ? 'Yellow' : 'Red';
-}
-const labeledModules = summaries.map(s => ({ id: s.id, label: labelStatus(s.trust) }));
-const recentMetrics = modules.flatMap(m => m.fetchSnapshot(2));
-const trustLogs = modules.map(m => `${m.id}:${m.calculateTrustIndex()}`);
-const trustJSON = JSON.stringify(summaries, null, 2);
-function formatOutput(item) {
-  return `[${item.id}] -> ${item.status} (${item.trust})`;
-}
-const formatted = summaries.map(formatOutput);
-const stableCount = summaries.filter(s => s.status === 'Stable').length;
-const optimalCount = summaries.filter(s => s.status === 'Optimal').length;
-const instabilityRatio = unstable.length / modules.length;
-const lastHistoryItem = modules[0].fetchSnapshot(1)[0];
-const highLatencyModules = modules.filter(m => m.metrics.latency > 150);
-const moduleTrustPairs = modules.map(m => [m.id, m.calculateTrustIndex()]);
