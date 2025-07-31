@@ -2,16 +2,16 @@
 
 import { z } from "zod"
 
-// Base schema for SelkaSense actions
-export type SelkaSenseSchema = z.ZodObject<z.ZodRawShape>
+// Base schema type for SelkaSense actions
+export type SelkaSenseSchema = z.ZodTypeAny
 
-// Standardized response for any action
+// Standardized action response
 export interface SelkaSenseActionResponse<T> {
   notice: string
   data?: T
 }
 
-// Core structure defining a SelkaSense action
+// Core definition of a SelkaSense action
 export interface SelkaSenseActionCore<
   S extends SelkaSenseSchema,
   R,
@@ -28,10 +28,10 @@ export interface SelkaSenseActionCore<
   ) => Promise<SelkaSenseActionResponse<R>>
 }
 
-// Union type covering any SelkaSense action
+// Union of all actions
 export type SelkaSenseAction = SelkaSenseActionCore<SelkaSenseSchema, unknown, unknown>
 
-// Example: Define an auraRead action for SelkaSense
+// Example action: perform an aura read scan
 export const auraReadAction: SelkaSenseActionCore<
   z.ZodObject<{
     contractAddress: z.ZodString
@@ -47,36 +47,49 @@ export const auraReadAction: SelkaSenseActionCore<
   }
 > = {
   id: "auraRead",
-  summary: "Run Selka aura pattern decoding on a target contract over a given timeframe",
+  summary: "Decode aura patterns on a contract over a timeframe",
   input: z.object({
-    contractAddress: z.string(),
+    contractAddress: z.string().min(1),
     timeframeHours: z.number().int().positive()
   }),
   execute: async ({ payload, context }) => {
-    const { contractAddress, timeframeHours } = payload
-    const { endpoint, token } = context
-
-    const response = await fetch(
-      `${endpoint}/selka/aura-scan?address=${encodeURIComponent(contractAddress)}&hours=${timeframeHours}`,
-      {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        }
-      }
-    )
-
-    if (!response.ok) {
-      throw new Error(`Selka API error: ${response.status} ${response.statusText}`)
+    // Validate context
+    if (!context.endpoint || !context.token) {
+      throw new Error("Missing context: endpoint and token are required")
     }
 
-    const result = await response.json()
-    return {
-      notice: `Aura read complete for ${contractAddress}`,
-      data: {
-        auraIntensity: result.intensity,
-        decodedPatterns: result.patterns as string[]
+    // Destructure payload
+    const { contractAddress, timeframeHours } = payload
+    const url = `${context.endpoint.replace(/\/$/, "")}/selka/aura-scan`
+    const params = new URLSearchParams({
+      address: contractAddress,
+      hours: String(timeframeHours),
+    }).toString()
+
+    try {
+      const resp = await fetch(`${url}?${params}`, {
+        headers: {
+          "Authorization": `Bearer ${context.token}`,
+          "Content-Type": "application/json"
+        }
+      })
+
+      if (!resp.ok) {
+        const text = await resp.text()
+        throw new Error(`API error (${resp.status}): ${text}`)
       }
+
+      const json = await resp.json()
+      return {
+        notice: `Aura scan complete for ${contractAddress}`,
+        data: {
+          auraIntensity: Number(json.intensity) || 0,
+          decodedPatterns: Array.isArray(json.patterns) ? json.patterns.map(String) : []
+        }
+      }
+
+    } catch (err: any) {
+      throw new Error(`Failed to execute auraReadAction: ${err.message}`)
     }
   }
 }
