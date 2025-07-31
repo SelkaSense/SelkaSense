@@ -1,57 +1,92 @@
-import { Connection, PublicKey } from "@solana/web3.js"
+import { Connection, PublicKey, ParsedInstruction } from "@solana/web3.js"
 
-interface SweepResult {
+interface SweepOptions {
+  /** Minimum distinct recipients per sender to consider suspicious */
+  minTransfers?: number
+  /** How many recent slots to scan */
+  scanDepth?: number
+  /** Program ID to inspect (default: SPL Token program) */
+  programId?: PublicKey
+  /** Maximum number of concurrent block fetches */
+  concurrency?: number
+}
+
+export interface SweepResult {
   token: string
   suspiciousSources: string[]
   sybilScore: number
 }
 
+/**
+ * Scans recent Solana blocks for potential Sybil-like behavior on a given SPL token.
+ */
 export async function runSybilSweep(
   connection: Connection,
   mintAddress: string,
-  minTransfers = 4
+  opts: SweepOptions = {}
 ): Promise<SweepResult> {
-  const mint = new PublicKey(mintAddress)
-  const programId = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA")
+  const {
+    minTransfers = 4,
+    scanDepth = 100,
+    programId = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"),
+    concurrency = 5,
+  } = opts
+
+  const mintKey = new PublicKey(mintAddress)
   const latestSlot = await connection.getSlot()
-  const suspiciousSources = new Set<string>()
-  let totalSuspicious = 0
+  const senderMap = new Map<string, Set<string>>()
 
-  for (let i = 0; i < 100; i++) {
-    const slot = latestSlot - i
-    const block = await connection.getBlock(slot, { maxSupportedTransactionVersion: 0 }).catch(() => null)
-    if (!block?.transactions) continue
+  // Helper to process a single block
+  async function processSlot(slot: number) {
+    try {
+      const block = await connection.getBlock(slot, { maxSupportedTransactionVersion: 0 })
+      if (!block?.transactions) return
 
-    const senderMap = new Map<string, Set<string>>()
-
-    for (const tx of block.transactions) {
-      for (const ix of tx.transaction.message.instructions) {
-        if ("parsed" in ix && ix.programId.equals(programId) && ix.parsed?.type === "transfer") {
-          const parsed = ix.parsed.info
-          if (parsed.mint !== mint.toBase58()) continue
-
-          const sender = parsed.source
-          const recipient = parsed.destination
-
-          if (!senderMap.has(sender)) senderMap.set(sender, new Set())
-          senderMap.get(sender)?.add(recipient)
+      for (const tx of block.transactions) {
+        for (const ix of tx.transaction.message.instructions as ParsedInstruction[]) {
+          if (
+            ix.programId.equals(programId) &&
+            ix.parsed?.type === "transfer" &&
+            ix.parsed.info.mint === mintKey.toBase58()
+          ) {
+            const { source, destination } = ix.parsed.info
+            let recSet = senderMap.get(source)
+            if (!recSet) {
+              recSet = new Set()
+              senderMap.set(source, recSet)
+            }
+            recSet.add(destination)
+          }
         }
       }
-    }
-
-    for (const [sender, recipients] of senderMap.entries()) {
-      if (recipients.size >= minTransfers) {
-        suspiciousSources.add(sender)
-        totalSuspicious += recipients.size
-      }
+    } catch {
+      // ignore fetch errors or unsupported blocks
     }
   }
 
-  const score = Math.min(100, suspiciousSources.size * 10 + totalSuspicious * 0.5)
+  // Batch slots into concurrent chunks
+  const slots = Array.from({ length: scanDepth }, (_, i) => latestSlot - i)
+  for (let i = 0; i < slots.length; i += concurrency) {
+    await Promise.all(slots.slice(i, i + concurrency).map(processSlot))
+  }
+
+  // Identify suspicious senders
+  const suspiciousSources: string[] = []
+  let totalSuspiciousTransfers = 0
+  for (const [sender, recipients] of senderMap.entries()) {
+    if (recipients.size >= minTransfers) {
+      suspiciousSources.push(sender)
+      totalSuspiciousTransfers += recipients.size
+    }
+  }
+
+  // Compute a simple Sybil risk score (0–100)
+  const rawScore = suspiciousSources.length * minTransfers + totalSuspiciousTransfers * 0.5
+  const sybilScore = Math.min(100, Math.floor(rawScore))
 
   return {
-    token: mint.toBase58(),
-    suspiciousSources: Array.from(suspiciousSources),
-    sybilScore: score
+    token: mintKey.toBase58(),
+    suspiciousSources,
+    sybilScore,
   }
 }
