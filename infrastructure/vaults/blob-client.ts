@@ -1,23 +1,29 @@
 import { BlobServiceClient } from "@azure/storage-blob"
 
-const baseUrl = process.env.NEXT_PUBLIC_STORAGE_URL?.trim()
+const storageUrl = process.env.NEXT_PUBLIC_STORAGE_URL?.trim()
 const sasToken = process.env.NEXT_PUBLIC_STORAGE_SAS?.trim()
 
-if (!baseUrl || !sasToken) {
-  throw new Error("❌ Azure Blob Storage configuration is incomplete: missing URL or SAS token")
+if (!storageUrl || !sasToken) {
+  throw new Error(
+    "❌ Azure Blob Storage configuration incomplete: both NEXT_PUBLIC_STORAGE_URL and NEXT_PUBLIC_STORAGE_SAS must be set"
+  )
 }
 
-// Construct the full connection URL safely
-const connectionUrl = `${baseUrl}${baseUrl.includes("?") ? "&" : "?"}${sasToken.startsWith("sv=") ? sasToken : `sv=${sasToken}`}`
+// Build a URL object from the base and append all SAS params
+const url = new URL(storageUrl)
+const sas = sasToken.replace(/^\?/, "") // strip leading '?' if present
+new URLSearchParams(sas).forEach((value, key) => {
+  url.searchParams.set(key, value)
+})
 
 let azureBlobClient: BlobServiceClient
 
 try {
-  azureBlobClient = new BlobServiceClient(connectionUrl)
-  console.log("[Azure] ✅ BlobServiceClient initialized successfully")
-} catch (error) {
-  console.error("[Azure] ❌ Failed to initialize BlobServiceClient", error)
-  throw new Error("Azure Blob client initialization failed")
+  azureBlobClient = new BlobServiceClient(url.toString())
+  console.info("[Azure] ✅ BlobServiceClient initialized")
+} catch (err) {
+  console.error("[Azure] ❌ Failed to initialize BlobServiceClient:", err)
+  throw new Error("Azure BlobServiceClient initialization failed")
 }
 
 export default azureBlobClient
