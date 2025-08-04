@@ -3,21 +3,21 @@ import statistics
 import time
 from collections import deque
 from datetime import datetime
-from typing import Deque, List, Optional
+from typing import Deque, List, Optional, Callable
 
 ###############################################################################
 # Logging setup
 ###############################################################################
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s | %(levelname)s | %(message)s",
-    datefmt="%Y-m-dT%H:%M:%SZ",
-)
+logger = logging.getLogger(__name__)
+handler = logging.StreamHandler()
+handler.setFormatter(logging.Formatter("%(asctime)s | %(levelname)s | %(message)s", "%Y-%m-%dT%H:%M:%SZ"))
+logger.addHandler(handler)
+logger.setLevel(logging.INFO)
 
 def log_event(event_type: str, payload: str) -> None:
-    """Emit a single structured log line."""
-    logging.info("[%s] %s", event_type.upper(), payload)
+    """Emit a single structured log line with event type and payload."""
+    logger.info("[%s] %s", event_type.upper(), payload)
 
 
 ###############################################################################
@@ -26,11 +26,12 @@ def log_event(event_type: str, payload: str) -> None:
 
 def z_score(series: List[float], value: float) -> float:
     """Return the z-score of *value* relative to *series*."""
-    if len(series) < 2:
+    n = len(series)
+    if n < 2:
         return 0.0
-    mean = statistics.mean(series)
-    stdev = statistics.stdev(series)
-    return (value - mean) / stdev if stdev else 0.0
+    μ = statistics.mean(series)
+    σ = statistics.stdev(series)
+    return (value - μ) / σ if σ else 0.0
 
 
 def detect_outliers(
@@ -40,19 +41,17 @@ def detect_outliers(
 ) -> List[float]:
     """
     Identify values that exceed either:
-      • a multiple of standard deviation (z-score)
-      • a multiple of the series mean (percent threshold)
+      • z-score > std_threshold
+      • value > mean * pct_threshold
     """
     if not series:
         return []
 
-    mean = statistics.mean(series)
+    μ = statistics.mean(series)
     outliers: List[float] = []
-
     for val in series:
-        if z_score(series, val) > std_threshold or val > mean * pct_threshold:
+        if z_score(series, val) > std_threshold or val > μ * pct_threshold:
             outliers.append(val)
-
     return outliers
 
 
@@ -66,23 +65,37 @@ class StreamWatch:
     and detects anomalies on demand.
     """
 
-    def __init__(self, window_size: int = 300) -> None:
+    def __init__(
+        self,
+        window_size: int = 300,
+        anomaly_callback: Optional[Callable[[List[float]], None]] = None
+    ) -> None:
         self.window: Deque[float] = deque(maxlen=window_size)
+        self.anomaly_callback = anomaly_callback
 
     def add_event(self, value: float) -> None:
         """Append a new datapoint and emit a log entry."""
+        timestamp = datetime.utcnow().isoformat()
         self.window.append(value)
-        log_event("event", f"latest_value={value}")
+        log_event("event", f"value={value:.2f} at {timestamp}")
 
     def check_for_anomalies(self) -> Optional[List[float]]:
-        """Return a list of anomalous values, if any."""
+        """Return list of anomalies, invoke callback if provided."""
         if not self.window:
             log_event("status", "no_data")
             return None
 
-        outliers = detect_outliers(list(self.window))
+        data = list(self.window)
+        outliers = detect_outliers(data)
         if outliers:
-            log_event("anomaly", f"count={len(outliers)} max={max(outliers)}")
+            count = len(outliers)
+            max_outlier = max(outliers)
+            log_event("anomaly", f"count={count} max={max_outlier:.2f}")
+            if self.anomaly_callback:
+                try:
+                    self.anomaly_callback(outliers)
+                except Exception as e:
+                    logger.error("Anomaly callback error: %s", e)
             return outliers
 
         log_event("status", "stable")
@@ -94,7 +107,10 @@ class StreamWatch:
 ###############################################################################
 
 if __name__ == "__main__":
-    monitor = StreamWatch(window_size=120)
+    def on_anomaly(spikes: List[float]) -> None:
+        print(">> ALERT! Detected spikes:", spikes)
+
+    monitor = StreamWatch(window_size=120, anomaly_callback=on_anomaly)
 
     # Simulate streaming data
     for i in range(1, 601):
