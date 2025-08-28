@@ -1,25 +1,38 @@
 {
   "scanReportId": "selka_diagnostic_20250628_001",
+  "schemaVersion": "1.1",
+  "environment": "production",
   "timestamp": "2025-06-28T09:44:13Z",
   "engine": "SelkaSense::SolanaTraceModule",
+
   "tokenProfile": {
+    "chain": "solana",
     "symbol": "XYZ",
     "mintAddress": "7hsd83Ksnq3fa45sgYsA8TUGsRnb9uZ9qebFwXvJtvqX",
-    "projectLabel": "Unknown"
+    "projectLabel": "Unknown",
+    "explorerUrl": "https://explorer.solana.com/address/7hsd83Ksnq3fa45sgYsA8TUGsRnb9uZ9qebFwXvJtvqX?cluster=mainnet-beta"
   },
+
   "riskFlags": {
     "liquidityAnomaly": true,
     "recentMintDetected": true,
     "whaleBehaviorAbsent": true,
-    "sybilScore": 72
+    "sybilScore": 72,
+    "sybilScoreNormalized": 0.72,
+    "liquidityDrainSevere": true
   },
+
   "insights": {
     "liquidityDelta24h": -46.3,
     "buyersUnique": 12,
     "verifiedSmartWallets": 0,
     "volatilityIndex": 88,
-    "totalTxsObserved": 97
+    "totalTxsObserved": 97,
+    "txRatePerHour": 4.04,
+    "smartWalletPresence": false,
+    "whalePresence": false
   },
+
   "tags": [
     {
       "label": "⚠️ Liquidity Drain",
@@ -34,9 +47,37 @@
       "note": "Score of 72 indicates potential coordinated wallet pattern"
     }
   ],
+
+  "derived": {
+    "isHighVolatility": true,
+    "isRecentMint": true,
+    "anomalyDensity": 0.124
+  },
+
+  "scoring": {
+    "riskScore": 86,
+    "normalizedScore01": 0.86,
+    "band": "High",
+    "breakdown": {
+      "sybil": 25.2,
+      "liquidityDrain": 25,
+      "noSmartWallets": 12,
+      "recentMint": 8,
+      "whalesAbsent": 8,
+      "highVolatility": 7.8
+    }
+  },
+
   "verdict": {
     "threatRating": "High",
     "action": "Deprioritize or blacklist until positive indicators emerge",
     "modelConfidence": 0.92
-  }
+  },
+
+  "recommendations": [
+    "Temporarily block promotions/listing and require manual review.",
+    "Increase slippage protection and cooldowns on buys/sells for 24h.",
+    "Raise anomaly sensitivity for Sybil clustering around this mint.",
+    "Monitor liquidity pools for further drains; alert at additional -10%."
+  ]
 }
