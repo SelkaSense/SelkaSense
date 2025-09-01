@@ -1,17 +1,19 @@
 import { z } from "zod"
 
+/**
+ * Schema for querying specific or all token balances via wallet
+ */
 export const BalanceQuerySchema = z
   .object({
+    /** Token mint address or symbol to fetch balance for (omit to fetch all) */
     assetId: z
       .string()
-      .min(3, "Asset ID must be at least 3 characters")
-      .max(64, "Asset ID cannot exceed 64 characters")
-      .describe("Token mint address or symbol to fetch balance for (leave empty for all assets)")
+      .regex(/^[a-zA-Z0-9]{3,64}$/, "assetId must be alphanumeric and 3–64 characters long")
       .optional(),
-    includeMetadata: z
-      .boolean()
-      .default(false)
-      .describe("Include token metadata (name, decimals, symbol) in the result"),
+    /** Whether to include token metadata (name, decimals, symbol) */
+    includeMetadata: z.boolean().optional().default(false),
   })
-  .strip()
-  .describe("Schema for querying specific or all token balances via wallet")
+  .strict()
+  .describe("Schema for balance queries")
+
+export type BalanceQuery = z.infer<typeof BalanceQuerySchema>
