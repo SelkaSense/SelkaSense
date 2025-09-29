@@ -1,20 +1,39 @@
 /**
  * Log an alert message based on assessed risk level.
- *
- * @param riskLevel  "high" | "medium" | "low"
- * @param message    human-readable alert text
+ * Adds timestamp and color-coded console output for readability.
  */
-export function triggerAlert(riskLevel: "high" | "medium" | "low", message: string): void {
+
+export type RiskLevel = "high" | "medium" | "low"
+
+export interface TriggerAlertOptions {
+  /** Optional override console prefix */
+  prefix?: string
+  /** Optional channel mapping for routing alerts elsewhere */
+  channelMap?: Record<RiskLevel, string>
+  /** Include timestamp (default true) */
+  withTimestamp?: boolean
+}
+
+export function triggerAlert(
+  riskLevel: RiskLevel,
+  message: string,
+  opts: TriggerAlertOptions = {}
+): void {
+  const { prefix, channelMap, withTimestamp = true } = opts
+
+  const ts = withTimestamp ? `[${new Date().toISOString()}] ` : ""
+  const channel = channelMap?.[riskLevel] ? `[${channelMap[riskLevel]}] ` : ""
+
+  const finalMsg = `${ts}${prefix ?? ""}${channel}${message}`
+
   switch (riskLevel) {
     case "high":
-      console.warn("[ALERT: HIGH RISK]", message)
+      console.warn(`%c[ALERT: HIGH RISK]`, "color: red; font-weight: bold;", finalMsg)
       break
-
     case "medium":
-      console.info("[Alert: Medium risk]", message)
+      console.info(`%c[Alert: Medium risk]`, "color: orange; font-weight: bold;", finalMsg)
       break
-
     default:
-      console.log("[Info: Low risk]", message)
+      console.log(`%c[Info: Low risk]`, "color: gray;", finalMsg)
   }
 }
