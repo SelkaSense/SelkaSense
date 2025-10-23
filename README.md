@@ -1,61 +1,57 @@
-# 🔮 SelkaSense: Predictive Token Risk Detection
+# SelkaSense  
 
-## 🌐 Overview
-
-SelkaSense is an AI-powered tool for predicting token risks and market instability in real time. It helps users stay ahead of volatility by delivering precise and timely signals.
-
-## 🔑 Key Features
-
-### 🔎 RiskRadar  
-Detects unstable tokens by tracking sharp price deviations.
-
-### 🌐 PulseTrack  
-Flags unusual market shifts based on volume and price behavior.
-
-### ⚠️ VolatilityPredict  
-Forecasts high-risk volatility using liquidity and price movement data.
-
-### 🧭 TrendShift  
-Identifies early trend reversals before they become obvious.
-
-### 💧 LiquidityFlow  
-Monitors low liquidity conditions that may block exits or indicate potential traps.
+AI-powered security layer for Solana — trace risks, detect anomalies, and protect traders in real time  
 
 ---
 
-## 🚀 Roadmap
+## 🌐 Ecosystem Links  
+- 🔷 [Twitter](https://x.com/SelkaSense)  
+- 📘 [GitBook](https://selkasense.gitbook.io/selkasense/)  
+- 💻 [GitHub](https://github.com/SelkaSense/SelkaSense)  
+- ✈️ [Telegram](https://t.me/selkasense)  
 
-### ✅ Phase 1 — MVP (Launched)
+---
 
-Our core detection engine is live and pulsing with real-time data:
+## ⚡ Core Features  
+- 🔍 **Analyzer Agent** — on-chain token scans & anomaly detection  
+- 📈 **Signal Agent** — real-time alerts, volume spikes, risk curves  
+- 🐋 **Observer Agent** — whale and wallet movement tracking  
+- 💎 **Gem Hunter** — early discovery of emerging tokens  
+- 🧭 **Strateg Agent** — AI-driven portfolio & trading strategies  
+- 🛠 **Custom Agent Builder** — create your own agent tailored to your trading style  
 
-- 🔎 **RiskRadar** — Predict token instability through behavioral pattern scans
-- 🌐 **PulseTrack** — Analyze seismic shifts in market structure and liquidity
-- ⚠️ **VolatilityPredict** — Forecast high-risk events with advanced AI modeling
-- 🧭 **TrendShift** — Detect early directional changes before the market reacts
+---
 
-📅 **Released:** Q3 2025
+## 🛣 Roadmap  
+**Phase 1 — Initial Launch**  
+- Core AI agents deployed  
+- Chrome extension v1  
+- Telegram Mini App prototype  
 
-### 🌀 Phase 2 — Current Cycle (Q3–Q4 2025)
+**Phase 2 — Expansion**  
+- Advanced scanning modules  
+- Portfolio monitoring dashboards  
+- Cross-platform integration  
 
-We’re expanding Selka’s sensitivity to subtle liquidity movements and signal patterns:
+**Phase 3 — Ecosystem Growth**  
+- Agent marketplace  
+- Tokenized access model  
+- DAO and governance  
 
-- 💧 **LiquidityFlow** — Monitor deep liquidity dynamics across tokens in real time
-- 🚀 **SignalBoost** — Amplify alert precision with enhanced anomaly scoring
-- 🛡 **FlowGuard** — AI-powered detection for unstable or manipulated liquidity pools
-- 🧱 **StabilityGuard** — Long-range analysis of token health and market sustainability
+---
 
-📅 **In Progress:** June–August 2025
+## 🧑‍💻 Tech Stack  
+- **Blockchain**: Solana  
+- **AI/ML**: anomaly detection & pattern recognition  
+- **Frontend**: React + Tailwind  
+- **Backend**: Node.js + TypeScript  
+- **APIs**: SolanaTracker, RugCheck, OpenAI  
 
-### 🔮 Phase 3 — Upcoming (Q1 2026 and beyond)
+---
 
-Future upgrades will include:
-
-- Advanced AI overlays  
-- Predictive simulation engines  
-- Full cross-chain adaptation and risk synchronization  
-
-Selka evolves as the chain does — stay tuned.
+## ⚠️ Disclaimer  
+SelkaSense is a research & analytics tool  
+It is **not financial advice** — always DYOR before making investment decisions  
 
 ---
 ## 🧠 AI Functionality
@@ -163,12 +159,4 @@ Tracks how much actual token volume backs the available liquidity.
 **Why it matters:**  
 Detects thin markets where exit liquidity is low — crucial for avoiding traps and slippage.
 
----
 
-## 🧾 Conclusion
-
-SelkaSense is built for those who move fast and think ahead.  
-With AI-powered detection, predictive analytics, and real-time insights, it’s your edge against volatility and on-chain traps.  
-Stay safe, stay early — Selka sees what others miss.
-
----
