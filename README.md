@@ -5,6 +5,7 @@ AI-powered security layer for Solana — trace risks, detect anomalies, and prot
 ---
 
 ## 🌐 Ecosystem Links  
+- 🔵 [Website](https://selkasense.com)
 - 🔷 [Twitter](https://x.com/SelkaSense)  
 - 📘 [GitBook](https://selkasense.gitbook.io/selkasense/)  
 - 💻 [GitHub](https://github.com/SelkaSense/SelkaSense)  
